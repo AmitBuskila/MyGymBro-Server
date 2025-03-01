@@ -1,9 +1,11 @@
+import 'reflect-metadata';
 import config from '../config';
 import { connectDB } from '../helpers/db';
 import app from './app';
+
 (async () => {
   try {
-    // await connectDB(config.databaseString);
+    await connectDB();
     app.listen(config.port, () =>
       console.log(`APP RUNNING ON PORT: ${config.port}`),
     );

@@ -17,7 +17,7 @@ app.use(
 );
 
 app.get('/', (_req: Request, res: Response) => {
-  res.status(200).json({  message: 'Server is Running! 🏃' });
+  res.status(200).json({ message: 'Server is Running! 🏃' });
 });
 
 app.use('/v1/api/users', userRoutes);
@@ -26,7 +26,6 @@ app.use((req, res, next) => {
   const error = new CustomError('Requested URL Not Found', 404);
   next(error);
 });
-
 
 app.all('*', (_req: Request, res: Response) => {
   res.status(404).json({ success: false, message: 'Page Not Found' });
