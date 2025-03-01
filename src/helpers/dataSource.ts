@@ -9,5 +9,6 @@ export const AppDataSource = new DataSource({
   database: 'postgres',
   synchronize: true,
   logging: false,
-  entities: ['src/entities/*.ts'], // Load your entities
+  schema: 'dev',
+  entities: ['src/entities/*.ts'],
 });
