@@ -1,10 +1,10 @@
 import { User } from '../entities/user.entity';
 import { AppDataSource } from '../helpers/dataSource';
-import { UserInput } from '../types/types';
+import { AddUserInput } from '../types/types';
 
 const userRepository = AppDataSource.getRepository(User);
 
-export const addUser = async (user: UserInput): Promise<User> => {
+export const addUser = async (user: AddUserInput): Promise<User> => {
   const newUser = new User();
   Object.assign(newUser, user);
   return userRepository.save(user);
