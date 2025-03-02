@@ -25,3 +25,16 @@ export interface AddWorkoutInput {
   user: Entity;
   sets?: Set[];
 }
+
+export interface AddSetInput {
+  workout?: Entity;
+  template?: Entity;
+  exercise: Entity;
+  index: number;
+  weight: number;
+  minReps: number;
+  maxReps: number;
+  notes?: number;
+  restTime: number;
+  repsDone?: number;
+}
