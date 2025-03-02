@@ -4,6 +4,7 @@ import express from 'express';
 import config from '../config';
 import userRoutes from '../routes/user.routes';
 import templateRoutes from '../routes/template.routes';
+import workoutRoutes from '../routes/workout.routes';
 import { CustomError } from '../utils/customError';
 
 const app: Application = express();
@@ -23,6 +24,7 @@ app.get('/', (_req: Request, res: Response) => {
 
 app.use('/users', userRoutes);
 app.use('/templates', templateRoutes);
+app.use('/workouts', workoutRoutes);
 
 app.use((req, res, next) => {
   const error = new CustomError('Requested URL Not Found', 404);

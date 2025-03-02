@@ -9,7 +9,7 @@ import { Exercise } from './exercise.entity';
 import { Template } from './template.entity';
 import { Workout } from './workout.entity';
 
-@Entity() // Specify the schema
+@Entity()
 @Check(
   `("workoutId" IS NOT NULL AND "templateId" IS NULL) OR ("workoutId" IS NULL AND "templateId" IS NOT NULL)`,
 )

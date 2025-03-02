@@ -11,8 +11,7 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
       .json({ message: 'Access denied. No token provided.' });
   }
   try {
-    const decoded = jwt.verify(token, config.jwtSecret) as JwtPayload;
-    console.log('Token decoded successfully:', decoded);
+    jwt.verify(token, config.jwtSecret) as JwtPayload;
     next();
   } catch (error) {
     return res.status(403).send('Invalid or expired token');

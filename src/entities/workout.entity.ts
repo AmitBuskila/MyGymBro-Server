@@ -14,9 +14,6 @@ export class Workout {
   id!: number;
 
   @Column()
-  firstName!: string;
-
-  @Column()
   startDate!: Date;
 
   @Column()
