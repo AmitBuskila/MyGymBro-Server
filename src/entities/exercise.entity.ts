@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Set } from './set.entity';
+import { WorkoutExercise } from './workoutExercise.entity';
 
 @Entity()
 export class Exercise {
@@ -18,8 +18,12 @@ export class Exercise {
   @Column({ nullable: true })
   secondaryMuscle!: string;
 
-  @OneToMany(() => Set, (sets) => sets.template, {
-    onDelete: 'CASCADE',
-  })
-  sets!: Set[];
+  @OneToMany(
+    () => WorkoutExercise,
+    (workoutExercises) => workoutExercises.exercise,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  workoutExercises!: WorkoutExercise[];
 }

@@ -1,12 +1,12 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
+  Entity,
   ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { Set } from './set.entity';
+import { WorkoutExercise } from './workoutExercise.entity';
 
 @Entity()
 export class Template {
@@ -25,8 +25,12 @@ export class Template {
   @ManyToOne(() => User, (user) => user.workouts, { onDelete: 'CASCADE' })
   user!: User;
 
-  @OneToMany(() => Set, (sets) => sets.template, {
-    onDelete: 'CASCADE',
-  })
-  sets!: Set[];
+  @OneToMany(
+    () => WorkoutExercise,
+    (workoutExercises) => workoutExercises.template,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  workoutExercises!: WorkoutExercise[];
 }

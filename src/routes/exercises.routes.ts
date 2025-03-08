@@ -4,6 +4,6 @@ import authenticateToken from '../middlewares/auth.middleware';
 
 const exercisesRouter = Router();
 
-exercisesRouter.post('/getExercises', authenticateToken, getExercises);
+exercisesRouter.get('/getExercises', authenticateToken, getExercises);
 
 export default exercisesRouter;
