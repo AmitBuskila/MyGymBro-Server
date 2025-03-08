@@ -15,3 +15,12 @@ export const findUserByEmail = async (
 ): Promise<User | undefined> => {
   return usersRepository.findOneOrFail({ where: { email } });
 };
+
+export const getUserDataDal = async (userId: number): Promise<User | null> => {
+  return usersRepository
+    .createQueryBuilder('user')
+    .leftJoinAndSelect('user.workouts', 'workouts')
+    .leftJoinAndSelect('user.templates', 'templates')
+    .where('user.id = :id', { id: userId })
+    .getOne();
+};

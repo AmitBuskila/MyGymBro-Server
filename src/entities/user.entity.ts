@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Workout } from './workout.entity';
+import { Template } from './template.entity';
 
 @Entity()
 export class User {
@@ -22,4 +23,9 @@ export class User {
     onDelete: 'CASCADE',
   })
   workouts!: Workout[];
+
+  @OneToMany(() => Template, (templates) => templates.user, {
+    onDelete: 'CASCADE',
+  })
+  templates!: Template[];
 }
