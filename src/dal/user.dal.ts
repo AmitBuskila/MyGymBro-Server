@@ -22,6 +22,7 @@ export const getUserDataDal = async (userId: number): Promise<User | null> => {
     .leftJoinAndSelect('user.workouts', 'workouts')
     .leftJoinAndSelect('user.templates', 'templates')
     .leftJoinAndSelect('templates.workoutExercises', 'workoutExercises')
+    .leftJoinAndSelect('workoutExercises.exercise', 'exercise')
     .leftJoinAndSelect('workoutExercises.sets', 'sets')
     .where('user.id = :id', { id: userId })
     .getOne();

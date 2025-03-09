@@ -13,21 +13,28 @@ export const addTemplate = async (req: Request, res: Response) => {
       image,
       user: { id: userId },
     });
-    workoutExercises.map(async (exercise: any) => {
-      const { sets, ...exerciseInput } = exercise;
-      const createdWorkoutExercise = await addWorkoutExercise({
-        ...exerciseInput,
-        template: { id: createdTemplate.id },
-      });
-      sets.map((set: any, index: number) =>
-        addSet({
-          ...set,
-          index,
-          workoutExercise: { id: createdWorkoutExercise.id },
-        }),
-      );
-    });
-    res.status(201).send('Template added successfully');
+    const templateExercises = await Promise.all(
+      workoutExercises.map(async (exercise: any) => {
+        const { sets, ...exerciseInput } = exercise;
+        const createdWorkoutExercise = await addWorkoutExercise({
+          ...exerciseInput,
+          template: { id: createdTemplate.id },
+        });
+        const createdSets = sets.map((set: any, index: number) =>
+          addSet({
+            ...set,
+            index,
+            workoutExercise: { id: createdWorkoutExercise.id },
+          }),
+        );
+
+        return { ...createdWorkoutExercise, sets: createdSets };
+      }),
+    );
+
+    res
+      .status(201)
+      .send({ ...createdTemplate, workoutExercises: templateExercises });
   } catch (error) {
     console.log(error);
 

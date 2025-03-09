@@ -46,4 +46,8 @@ export class WorkoutExercise {
 
   @Column()
   restTime!: string;
+
+  //todo remove null
+  @Column({ nullable: true })
+  index!: number;
 }

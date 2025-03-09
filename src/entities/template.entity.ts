@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { WorkoutExercise } from './workoutExercise.entity';
+import { Workout } from './workout.entity';
 
 @Entity()
 export class Template {
@@ -33,4 +34,9 @@ export class Template {
     },
   )
   workoutExercises!: WorkoutExercise[];
+
+  @OneToMany(() => Workout, (workouts) => workouts.template, {
+    onDelete: 'CASCADE',
+  })
+  workouts!: Workout[];
 }

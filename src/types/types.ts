@@ -23,7 +23,8 @@ export interface AddWorkoutInput {
   startDate: string;
   totalTime: number;
   user: Entity;
-  sets?: Set[];
+  template?: Entity;
+  exercises?: addWorkoutExerciseInput[];
 }
 
 export interface addWorkoutExerciseInput {

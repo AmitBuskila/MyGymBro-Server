@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { WorkoutExercise } from './workoutExercise.entity';
+import { Template } from './template.entity';
 
 @Entity()
 export class Workout {
@@ -21,6 +22,11 @@ export class Workout {
 
   @ManyToOne(() => User, (user) => user.workouts, { onDelete: 'CASCADE' })
   user!: User;
+
+  @ManyToOne(() => Template, (template) => template.workouts, {
+    onDelete: 'CASCADE',
+  })
+  template!: Template;
 
   @OneToMany(
     () => WorkoutExercise,
