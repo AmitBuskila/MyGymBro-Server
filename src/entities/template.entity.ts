@@ -13,7 +13,7 @@ export class Template {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ unique: true })
+  @Column()
   name!: string;
 
   @Column()

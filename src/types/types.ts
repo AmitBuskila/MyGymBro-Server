@@ -16,7 +16,7 @@ export interface AddTemplateInput {
   description?: string;
   image: string;
   user: Entity;
-  sets?: Set[];
+  exercises?: addWorkoutExerciseInput[];
 }
 
 export interface AddWorkoutInput {
@@ -26,15 +26,19 @@ export interface AddWorkoutInput {
   sets?: Set[];
 }
 
-export interface AddSetInput {
+export interface addWorkoutExerciseInput {
   workout?: Entity;
   template?: Entity;
   exercise: Entity;
+  restTime: number;
+  notes?: number;
+  sets: AddSetInput[];
+}
+export interface AddSetInput {
+  workoutExercise: Entity;
   index: number;
   weight: number;
   minReps: number;
   maxReps: number;
-  notes?: number;
-  restTime: number;
   repsDone?: number;
 }

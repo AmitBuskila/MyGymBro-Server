@@ -1,22 +1,32 @@
 import { Request, Response } from 'express';
 import { addTemplateDal, getUserTemplatesDal } from '../dal/template.dal';
 import { Template } from '../entities/template.entity';
+import { addSet } from '../dal/set.dal';
+import { addWorkoutExercise } from '../dal/exercise.dal';
 
 export const addTemplate = async (req: Request, res: Response) => {
   try {
-    const { name, description, image, userId, sets } = req.body;
-    // console.log(req.body);
+    const { name, description, image, userId, workoutExercises } = req.body;
     const createdTemplate: Template = await addTemplateDal({
       name,
       description,
       image,
       user: { id: userId },
     });
-    // await Promise.all(
-    //   sets.map((set) =>
-    //     addSet({ template: { id: createdTemplate.id }, ...set }),
-    //   ),
-    // );
+    workoutExercises.map(async (exercise: any) => {
+      const { sets, ...exerciseInput } = exercise;
+      const createdWorkoutExercise = await addWorkoutExercise({
+        ...exerciseInput,
+        template: { id: createdTemplate.id },
+      });
+      sets.map((set: any, index: number) =>
+        addSet({
+          ...set,
+          index,
+          workoutExercise: { id: createdWorkoutExercise.id },
+        }),
+      );
+    });
     res.status(201).send('Template added successfully');
   } catch (error) {
     console.log(error);
