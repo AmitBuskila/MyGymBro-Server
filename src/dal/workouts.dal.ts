@@ -17,6 +17,33 @@ export const getUserWorkoutsDal = async (
 ): Promise<Workout[]> => {
   return workoutsRepository
     .createQueryBuilder('workout')
+    .leftJoinAndSelect('workout.workoutExercises', 'workoutExercises')
+    .leftJoinAndSelect('workoutExercises.exercise', 'exercise')
+    .leftJoinAndSelect('workoutExercises.sets', 'sets')
     .where('workout.userId = :userId', { userId })
+    .orderBy('workout.startDate', 'DESC')
     .getMany();
+};
+
+export const getWorkoutById = async (workoutId: number): Promise<Workout> => {
+  return workoutsRepository
+    .createQueryBuilder('workout')
+    .leftJoinAndSelect('workout.workoutExercises', 'workoutExercises')
+    .leftJoinAndSelect('workoutExercises.exercise', 'exercise')
+    .leftJoinAndSelect('workoutExercises.sets', 'sets')
+    .where('workout.id = :workoutId', { workoutId })
+    .getOneOrFail();
+};
+
+export const getLatestWorkoutDal = async (
+  templateId: number,
+): Promise<Workout | null> => {
+  return workoutsRepository
+    .createQueryBuilder('workout')
+    .leftJoinAndSelect('workout.workoutExercises', 'workoutExercises')
+    .leftJoinAndSelect('workoutExercises.exercise', 'exercise')
+    .leftJoinAndSelect('workoutExercises.sets', 'sets')
+    .where('workout.templateId = :templateId', { templateId })
+    .orderBy('workout.startDate', 'DESC')
+    .getOne();
 };

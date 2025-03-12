@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
-import { addWorkoutDal, getUserWorkoutsDal } from '../dal/workouts.dal';
+import {
+  addWorkoutDal,
+  getLatestWorkoutDal,
+  getUserWorkoutsDal,
+} from '../dal/workouts.dal';
 import { Workout } from '../entities/workout.entity';
 import { addWorkoutExercise } from '../dal/exercise.dal';
 import { addSet } from '../dal/set.dal';
@@ -44,9 +48,20 @@ export const addWorkout = async (req: Request, res: Response) => {
 
 export const getWorkouts = async (req: Request, res: Response) => {
   try {
-    const templates = await getUserWorkoutsDal(Number(req.params.userId));
-    res.status(200).send(templates);
+    const workouts = await getUserWorkoutsDal(+req.params.userId);
+    res.status(200).send(workouts);
   } catch (error) {
+    console.log(error);
+    res.status(500).send((error as Error).message);
+  }
+};
+
+export const getLatestWorkout = async (req: Request, res: Response) => {
+  try {
+    const workout = await getLatestWorkoutDal(+req.params.templateId);
+    res.status(200).send(workout);
+  } catch (error) {
+    console.log(error);
     res.status(500).send((error as Error).message);
   }
 };

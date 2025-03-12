@@ -19,9 +19,9 @@ export const findUserByEmail = async (
 export const getUserDataDal = async (userId: number): Promise<User | null> => {
   return usersRepository
     .createQueryBuilder('user')
-    .leftJoinAndSelect('user.workouts', 'workouts')
     .leftJoinAndSelect('user.templates', 'templates')
     .leftJoinAndSelect('templates.workoutExercises', 'workoutExercises')
+    .addOrderBy('workoutExercises.index')
     .leftJoinAndSelect('workoutExercises.exercise', 'exercise')
     .leftJoinAndSelect('workoutExercises.sets', 'sets')
     .where('user.id = :id', { id: userId })

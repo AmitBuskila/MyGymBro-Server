@@ -16,23 +16,27 @@ export const addWorkoutExercise = async (
   return AppDataSource.getRepository(WorkoutExercise).save(newTemplate);
 };
 
-export const getData = (userId: number, exerciseIds: number[]) => {
+//unused
+export const getLatestWorkoutPerExercise = (
+  userId: number,
+  exerciseIds: number[],
+) => {
   const rankedWorkoutsQuery = AppDataSource.getRepository(Workout)
     .createQueryBuilder('workout')
     .select([
-      'workoutExercise.exerciseId AS exerciseId',
+      'workout_exercise.exerciseId AS exerciseId',
       'workout.id AS workoutId',
       'workout.startDate AS workoutDate',
-      'ROW_NUMBER() OVER (PARTITION BY workoutExercise.exerciseId ORDER BY workout.startDate DESC) AS rowNumber',
+      'ROW_NUMBER() OVER (PARTITION BY workout_exercise.exerciseId ORDER BY workout.startDate DESC) AS rowNumber',
     ])
-    .innerJoin('workout.workoutExercises', 'workoutExercise')
+    .innerJoin('workout.workoutExercises', 'workout_exercise')
     .where('workout.userId = :userId', { userId })
-    .andWhere('workoutExercise.exerciseId IN (:...exerciseIds)', {
+    .andWhere('workout_exercise.exerciseId IN (:...exerciseIds)', {
       exerciseIds,
     });
 
   return AppDataSource.createQueryBuilder()
-    .select(['ranked.exerciseId', 'ranked.workoutId', 'ranked.workoutDate'])
+    .select(['ranked.exerciseId', 'ranked.workoutId'])
     .from(`(${rankedWorkoutsQuery.getQuery()})`, 'ranked')
     .where('ranked.rowNumber = 1')
     .setParameters(rankedWorkoutsQuery.getParameters())
