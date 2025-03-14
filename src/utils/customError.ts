@@ -1,7 +1,9 @@
-export class CustomError extends Error {
+export class ServerError extends Error {
   status;
-  constructor(message: string, status: number) {
+  data;
+  constructor(status: number, message: string, data?: Object) {
     super(message);
     this.status = status;
+    this.data = data;
   }
 }

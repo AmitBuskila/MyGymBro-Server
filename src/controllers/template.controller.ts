@@ -4,49 +4,44 @@ import { Template } from '../entities/template.entity';
 import { addSet } from '../dal/set.dal';
 import { addWorkoutExercise } from '../dal/exercise.dal';
 
-export const addTemplate = async (req: Request, res: Response) => {
-  try {
-    const { name, description, image, userId, workoutExercises } = req.body;
-    const createdTemplate: Template = await addTemplateDal({
-      name,
-      description,
-      image,
-      user: { id: userId },
-    });
-    const templateExercises = await Promise.all(
-      workoutExercises.map(async (exercise: any) => {
-        const { sets, ...exerciseInput } = exercise;
-        const createdWorkoutExercise = await addWorkoutExercise({
-          ...exerciseInput,
-          template: { id: createdTemplate.id },
-        });
-        const createdSets = sets.map((set: any, index: number) =>
-          addSet({
-            ...set,
-            index,
-            workoutExercise: { id: createdWorkoutExercise.id },
-          }),
-        );
+export const addTemplate = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  const { name, description, image, userId, workoutExercises } = req.body;
+  const createdTemplate: Template = await addTemplateDal({
+    name,
+    description,
+    image,
+    user: { id: userId },
+  });
+  const templateExercises = await Promise.all(
+    workoutExercises.map(async (exercise: any) => {
+      const { sets, ...exerciseInput } = exercise;
+      const createdWorkoutExercise = await addWorkoutExercise({
+        ...exerciseInput,
+        template: { id: createdTemplate.id },
+      });
+      const createdSets = sets.map((set: any, index: number) =>
+        addSet({
+          ...set,
+          index,
+          workoutExercise: { id: createdWorkoutExercise.id },
+        }),
+      );
 
-        return { ...createdWorkoutExercise, sets: createdSets };
-      }),
-    );
-
-    res
-      .status(201)
-      .send({ ...createdTemplate, workoutExercises: templateExercises });
-  } catch (error) {
-    console.log(error);
-
-    res.status(500).send((error as Error).message);
-  }
+      return { ...createdWorkoutExercise, sets: createdSets };
+    }),
+  );
+  return res
+    .status(201)
+    .send({ ...createdTemplate, workoutExercises: templateExercises });
 };
 
-export const getTemplates = async (req: Request, res: Response) => {
-  try {
-    const templates = await getUserTemplatesDal(Number(req.params.userId));
-    res.status(200).send(templates);
-  } catch (error) {
-    res.status(500).send((error as Error).message);
-  }
+export const getTemplates = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  const templates = await getUserTemplatesDal(Number(req.params.userId));
+  return res.status(200).send(templates);
 };

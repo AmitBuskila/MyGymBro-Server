@@ -1,12 +1,12 @@
 import cors from 'cors';
-import type { Application, Request, Response } from 'express';
-import express from 'express';
+import type { Application } from 'express';
+import express, { Request, Response } from 'express';
 import config from '../config';
-import userRoutes from '../routes/user.routes';
-import templateRoutes from '../routes/template.routes';
-import workoutRoutes from '../routes/workout.routes';
 import exerciseRoutes from '../routes/exercises.routes';
-import { CustomError } from '../utils/customError';
+import templateRoutes from '../routes/template.routes';
+import userRoutes from '../routes/user.routes';
+import workoutRoutes from '../routes/workout.routes';
+import { ServerError } from '../utils/customError';
 
 const app: Application = express();
 app.use(express.json());
@@ -19,17 +19,13 @@ app.use(
   }),
 );
 
-app.get('/', (_req: Request, res: Response) => {
-  res.status(200).json({ message: 'Server is Running! 🏃' });
-});
-
 app.use('/users', userRoutes);
 app.use('/templates', templateRoutes);
 app.use('/workouts', workoutRoutes);
 app.use('/exercises', exerciseRoutes);
 
 app.use((req, res, next) => {
-  const error = new CustomError('Requested URL Not Found', 404);
+  const error = new ServerError(404, 'Requested URL Not Found');
   next(error);
 });
 

@@ -5,15 +5,24 @@ import {
   getWorkouts,
 } from '../controllers/workout.controller';
 import authenticateToken from '../middlewares/auth.middleware';
+import { asyncErrorHandler } from '../middlewares/asyncErrorHandler.middleware';
 
 const workoutsRouter = Router();
 
-workoutsRouter.post('/addWorkout', authenticateToken, addWorkout);
-workoutsRouter.get('/getWorkouts/:userId', authenticateToken, getWorkouts);
+workoutsRouter.post(
+  '/addWorkout',
+  authenticateToken,
+  asyncErrorHandler(addWorkout),
+);
+workoutsRouter.get(
+  '/getWorkouts/:userId',
+  authenticateToken,
+  asyncErrorHandler(getWorkouts),
+);
 workoutsRouter.get(
   '/getLatestWorkout/:templateId',
   authenticateToken,
-  getLatestWorkout,
+  asyncErrorHandler(getLatestWorkout),
 );
 
 export default workoutsRouter;
