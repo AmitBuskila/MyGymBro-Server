@@ -7,4 +7,6 @@ export default {
   port: process.env.PORT || 5000,
   clientUrl: process.env.CLIENT_URL || '',
   jwtSecret: process.env.ACCESS_TOKEN || '',
+  postgresUrl: process.env.POSTGRES_URL || '',
+  mode: process.env.NODE_ENV || '',
 };
