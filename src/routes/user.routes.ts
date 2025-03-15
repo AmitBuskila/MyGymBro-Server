@@ -1,10 +1,15 @@
-import express from "express";
-import { loginUser, registerUser } from "../controllers/user.controller";
-import authenticateToken from "../middlewares/auth.middleware";
+import { Router } from 'express';
+import {
+  loginUser,
+  registerUser,
+  getUserData,
+} from '../controllers/user.controller';
+import { asyncErrorHandler } from '../middlewares/asyncErrorHandler.middleware';
 
-const router = express.Router();
+const userRouter = Router();
 
-router.post("/register", authenticateToken, registerUser);
-router.post("/login", authenticateToken, loginUser);
+userRouter.post('/register', asyncErrorHandler(registerUser));
+userRouter.post('/login', asyncErrorHandler(loginUser));
+userRouter.get('/getData/:userId', asyncErrorHandler(getUserData));
 
-export default router;
+export default userRouter;
