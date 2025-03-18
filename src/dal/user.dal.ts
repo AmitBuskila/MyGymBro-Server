@@ -24,6 +24,7 @@ export const getUserDataDal = async (userId: number): Promise<User | null> => {
     .addOrderBy('workoutExercises.index')
     .leftJoinAndSelect('workoutExercises.exercise', 'exercise')
     .leftJoinAndSelect('workoutExercises.sets', 'sets')
+    .addOrderBy('sets.index')
     .where('user.id = :id', { id: userId })
     .getOne();
 };
