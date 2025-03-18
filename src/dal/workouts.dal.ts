@@ -41,9 +41,11 @@ export const getLatestWorkoutDal = async (
   return workoutsRepository
     .createQueryBuilder('workout')
     .leftJoinAndSelect('workout.workoutExercises', 'workoutExercises')
+    .addOrderBy('workoutExercises.index')
     .leftJoinAndSelect('workoutExercises.exercise', 'exercise')
     .leftJoinAndSelect('workoutExercises.sets', 'sets')
     .where('workout.templateId = :templateId', { templateId })
-    .orderBy('workout.startDate', 'DESC')
+    .addOrderBy('workout.startDate', 'DESC')
+    .addOrderBy('sets.index')
     .getOne();
 };

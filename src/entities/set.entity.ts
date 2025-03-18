@@ -23,6 +23,9 @@ export class Set {
   @Column('decimal', { precision: 6, scale: 2 })
   weight!: number;
 
+  @Column({ default: false })
+  isSecondary!: boolean;
+
   @Column({ nullable: true })
   repsDone?: number;
 }
