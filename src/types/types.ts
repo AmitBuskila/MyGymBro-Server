@@ -1,5 +1,3 @@
-import { Set } from '../entities/set.entity';
-
 export interface AddUserInput {
   firstName: string;
   lastName: string;
@@ -19,6 +17,13 @@ export interface AddTemplateInput {
   exercises?: addWorkoutExerciseInput[];
 }
 
+export interface UpdateTemplateInput {
+  name?: string;
+  description?: string;
+  image?: string;
+  exercises?: addWorkoutExerciseInput[];
+}
+
 export interface AddWorkoutInput {
   startDate: string;
   totalTime: number;
@@ -31,6 +36,7 @@ export interface addWorkoutExerciseInput {
   workout?: Entity;
   template?: Entity;
   exercise: Entity;
+  index: number;
   restTime: number;
   notes?: number;
   sets: AddSetInput[];

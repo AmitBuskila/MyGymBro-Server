@@ -38,6 +38,7 @@ export class WorkoutExercise {
 
   @OneToMany(() => Set, (sets) => sets.workoutExercise, {
     onDelete: 'CASCADE',
+    cascade: ['remove', 'insert'],
   })
   sets!: Set[];
 

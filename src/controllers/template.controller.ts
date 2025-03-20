@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
-import { addTemplateDal, getUserTemplatesDal } from '../dal/template.dal';
+import {
+  addTemplateDal,
+  getUserTemplatesDal,
+  updateTemplateDal,
+} from '../dal/template.dal';
 import { Template } from '../entities/template.entity';
 import { addSet } from '../dal/set.dal';
 import { addWorkoutExercise } from '../dal/exercise.dal';
@@ -36,6 +40,18 @@ export const addTemplate = async (
   return res
     .status(201)
     .send({ ...createdTemplate, workoutExercises: templateExercises });
+};
+
+export const updateTemplate = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  const { template } = req.body;
+  const updatedTemplate = await updateTemplateDal(
+    template,
+    +req.params.templateId,
+  );
+  return res.status(200).send(updatedTemplate);
 };
 
 export const getTemplates = async (
