@@ -32,7 +32,9 @@ export class Workout {
     () => WorkoutExercise,
     (workoutExercises) => workoutExercises.workout,
     {
+      cascade: ['remove', 'insert'],
       onDelete: 'CASCADE',
+      orphanedRowAction: 'delete',
     },
   )
   workoutExercises!: WorkoutExercise[];

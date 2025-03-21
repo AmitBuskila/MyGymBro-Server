@@ -30,7 +30,9 @@ export class Template {
     () => WorkoutExercise,
     (workoutExercises) => workoutExercises.template,
     {
+      cascade: ['remove', 'insert'],
       onDelete: 'CASCADE',
+      orphanedRowAction: 'delete',
     },
   )
   workoutExercises!: WorkoutExercise[];

@@ -9,11 +9,14 @@ export const getAllExercisesDal = async (): Promise<Exercise[] | null> => {
 };
 
 export const addWorkoutExercise = async (
-  template: addWorkoutExerciseInput,
+  workoutExercise: addWorkoutExerciseInput,
 ): Promise<WorkoutExercise> => {
-  const newTemplate = new WorkoutExercise();
-  Object.assign(newTemplate, template);
-  return AppDataSource.getRepository(WorkoutExercise).save(newTemplate);
+  const newExercise = new WorkoutExercise();
+  Object.assign(newExercise, workoutExercise);
+  const addedExercise =
+    await AppDataSource.getRepository(WorkoutExercise).save(newExercise);
+  console.log('workout exercise has been added', { addedExercise });
+  return addedExercise;
 };
 
 //unused
