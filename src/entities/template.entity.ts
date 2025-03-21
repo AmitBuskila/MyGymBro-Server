@@ -32,6 +32,7 @@ export class Template {
     {
       cascade: ['remove', 'insert'],
       onDelete: 'CASCADE',
+      orphanedRowAction: 'delete',
     },
   )
   workoutExercises!: WorkoutExercise[];

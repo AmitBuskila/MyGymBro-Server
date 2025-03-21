@@ -12,9 +12,7 @@ import { Workout } from './workout.entity';
 import { Set } from './set.entity';
 
 @Entity()
-@Check(
-  `("workoutId" IS NOT NULL AND "templateId" IS NULL) OR ("workoutId" IS NULL AND "templateId" IS NOT NULL)`,
-)
+@Check(`NOT ("workoutId" IS NOT NULL AND "templateId" IS NOT NULL)`)
 export class WorkoutExercise {
   @PrimaryGeneratedColumn()
   id!: number;

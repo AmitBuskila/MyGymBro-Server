@@ -20,7 +20,9 @@ export const updateTemplateDal = async (
     id: templateId,
   });
   Object.assign(templateToUpdate, template);
-  return templatesRepository.save(templateToUpdate);
+  const updatedTemplate = await templatesRepository.save(templateToUpdate);
+  console.log('template has been updated', { updatedTemplate });
+  return updatedTemplate;
 };
 
 export const getUserTemplatesDal = async (

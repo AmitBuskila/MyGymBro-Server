@@ -15,7 +15,7 @@ templateRouter.post(
   asyncErrorHandler(addTemplate),
 );
 templateRouter.put(
-  '/updateTemplate',
+  '/updateTemplate/:templateId',
   authenticateToken,
   asyncErrorHandler(updateTemplate),
 );

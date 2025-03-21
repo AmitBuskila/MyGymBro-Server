@@ -14,14 +14,14 @@ export interface AddTemplateInput {
   description?: string;
   image: string;
   user: Entity;
-  exercises?: addWorkoutExerciseInput[];
+  workoutExercises?: addWorkoutExerciseInput[];
 }
 
 export interface UpdateTemplateInput {
   name?: string;
   description?: string;
   image?: string;
-  exercises?: addWorkoutExerciseInput[];
+  workoutExercises?: addWorkoutExerciseInput[];
 }
 
 export interface AddWorkoutInput {
