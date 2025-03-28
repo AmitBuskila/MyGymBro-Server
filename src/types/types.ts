@@ -37,7 +37,7 @@ export interface addWorkoutExerciseInput {
   template?: Entity;
   exercise: Entity;
   index: number;
-  restTime: number;
+  restTime?: number;
   notes?: number;
   sets: AddSetInput[];
 }
