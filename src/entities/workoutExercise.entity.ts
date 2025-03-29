@@ -43,7 +43,7 @@ export class WorkoutExercise {
   @Column({ nullable: true })
   notes?: string;
 
-  @Column()
+  @Column({ nullable: true })
   restTime!: string;
 
   //todo remove null

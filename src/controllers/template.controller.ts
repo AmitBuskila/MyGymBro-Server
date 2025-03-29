@@ -4,6 +4,7 @@ import { addSet } from '../dal/set.dal';
 import {
   addTemplateDal,
   getUserTemplatesDal,
+  removeTemplateDal,
   updateTemplateDal,
 } from '../dal/template.dal';
 import { Set } from '../entities/set.entity';
@@ -36,6 +37,14 @@ const createWorkoutEntities = async (
       return { ...createdWorkoutExercise, sets: createdSets };
     }),
   );
+};
+
+export const removeTemplate = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  const deletedId: number = await removeTemplateDal(+req.params.templateId);
+  return res.status(200).send({ deletedId });
 };
 
 export const addTemplate = async (

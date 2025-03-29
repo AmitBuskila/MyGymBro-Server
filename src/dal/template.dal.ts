@@ -1,8 +1,23 @@
+import { DeleteResult } from 'typeorm';
 import { Template } from '../entities/template.entity';
 import { AppDataSource } from '../helpers/dataSource';
 import { AddTemplateInput, UpdateTemplateInput } from '../types/types';
+import { ServerError } from '../utils/customError';
 
 const templatesRepository = AppDataSource.getRepository(Template);
+
+export const removeTemplateDal = async (
+  templateId: number,
+): Promise<number> => {
+  const deleted: DeleteResult = await templatesRepository.delete({
+    id: templateId,
+  });
+  if (deleted.affected === 0) {
+    throw new ServerError(404, 'Template dont exist', { templateId });
+  }
+  console.log('template has been deleted', { templateId });
+  return templateId;
+};
 
 export const addTemplateDal = async (
   template: AddTemplateInput,

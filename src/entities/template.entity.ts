@@ -17,11 +17,11 @@ export class Template {
   @Column()
   name!: string;
 
-  @Column()
-  description!: string;
+  @Column({ nullable: true })
+  description?: string;
 
-  @Column()
-  image!: string;
+  @Column({ nullable: true })
+  image?: string;
 
   @ManyToOne(() => User, (user) => user.workouts, { onDelete: 'CASCADE' })
   user!: User;
