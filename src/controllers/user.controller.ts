@@ -10,7 +10,7 @@ export const registerUser = async (req: Request, res: Response) => {
   const { firstName, lastName, email, password } = req.body;
   const hashedPassword: string = await bcrypt.hash(password, 10);
   await addUser({ firstName, lastName, email, password: hashedPassword });
-  return res
+  res
     .status(201)
     .send({ message: 'User registered successfully', success: true });
 };
@@ -32,25 +32,27 @@ export const loginUser = async (req: Request, res: Response) => {
   const token: string = jwt.sign({ id: user.id }, config.jwtSecret, {
     expiresIn: '3 hours',
   });
-  return res.send({ token });
+  res.send({ token });
 };
 
 export const refreshToken = async (req: Request, res: Response) => {
   const token: string | undefined = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.sendStatus(401);
-  const decodedToken: JwtPayload = (jwt.decode(token) as JwtPayload)!;
-
-  if (decodedToken.id) {
-    const newAccessToken: string = jwt.sign(
-      { id: decodedToken.id },
-      config.jwtSecret,
-      {
-        expiresIn: '3 hours',
-      },
-    );
-    res.json({ accessToken: newAccessToken });
+  if (!token) {
+    res.sendStatus(401);
   } else {
-    res.sendStatus(403);
+    const decodedToken: JwtPayload = (jwt.decode(token) as JwtPayload)!;
+    if (decodedToken.id) {
+      const newAccessToken: string = jwt.sign(
+        { id: decodedToken.id },
+        config.jwtSecret,
+        {
+          expiresIn: '3 hours',
+        },
+      );
+      res.json({ accessToken: newAccessToken });
+    } else {
+      res.sendStatus(403);
+    }
   }
 };
 

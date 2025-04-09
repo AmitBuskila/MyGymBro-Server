@@ -39,18 +39,12 @@ const createWorkoutEntities = async (
   );
 };
 
-export const removeTemplate = async (
-  req: Request,
-  res: Response,
-): Promise<Response> => {
+export const removeTemplate = async (req: Request, res: Response) => {
   const deletedId: number = await removeTemplateDal(+req.params.templateId);
-  return res.status(200).send({ deletedId });
+  res.status(200).send({ deletedId });
 };
 
-export const addTemplate = async (
-  req: Request,
-  res: Response,
-): Promise<Response> => {
+export const addTemplate = async (req: Request, res: Response) => {
   const { name, description, image, userId, workoutExercises } = req.body;
   const createdTemplate: Template = await addTemplateDal({
     name,
@@ -62,15 +56,12 @@ export const addTemplate = async (
     workoutExercises,
     createdTemplate.id,
   );
-  return res
+  res
     .status(201)
     .send({ ...createdTemplate, workoutExercises: templateExercises });
 };
 
-export const updateTemplate = async (
-  req: Request,
-  res: Response,
-): Promise<Response> => {
+export const updateTemplate = async (req: Request, res: Response) => {
   const { workoutExercises } = req.body;
   const templateExercises: WorkoutExercise[] = await createWorkoutEntities(
     workoutExercises,
@@ -84,13 +75,10 @@ export const updateTemplate = async (
     },
     +req.params.templateId,
   );
-  return res.status(200).send(updatedTemplate);
+  res.status(200).send(updatedTemplate);
 };
 
-export const getTemplates = async (
-  req: Request,
-  res: Response,
-): Promise<Response> => {
+export const getTemplates = async (req: Request, res: Response) => {
   const templates = await getUserTemplatesDal(Number(req.params.userId));
-  return res.status(200).send(templates);
+  res.status(200).send(templates);
 };
