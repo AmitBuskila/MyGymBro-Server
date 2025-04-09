@@ -25,7 +25,7 @@ app.use('/workouts', workoutRoutes);
 app.use('/exercises', exerciseRoutes);
 
 app.use((req, res, next) => {
-  const error = new ServerError(404, 'Requested URL Not Found');
+  const error = new ServerError(404, 'Requested URL Not Found: ' + req.url);
   next(error);
 });
 

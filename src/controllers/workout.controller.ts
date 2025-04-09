@@ -8,10 +8,7 @@ import { Workout } from '../entities/workout.entity';
 import { addWorkoutExercise } from '../dal/exercise.dal';
 import { addSet } from '../dal/set.dal';
 
-export const addWorkout = async (
-  req: Request,
-  res: Response,
-): Promise<Response> => {
+export const addWorkout = async (req: Request, res: Response) => {
   const { startDate, totalTime, templateId, userId, workoutExercises } =
     req.body;
   const createdWorkout: Workout = await addWorkoutDal({
@@ -39,23 +36,17 @@ export const addWorkout = async (
     }),
   );
 
-  return res
+  res
     .status(201)
     .send({ ...createdWorkout, workoutExercises: createdWorkoutExercises });
 };
 
-export const getWorkouts = async (
-  req: Request,
-  res: Response,
-): Promise<Response> => {
+export const getWorkouts = async (req: Request, res: Response) => {
   const workouts = await getUserWorkoutsDal(+req.params.userId);
-  return res.status(200).send(workouts);
+  res.status(200).send(workouts);
 };
 
-export const getLatestWorkout = async (
-  req: Request,
-  res: Response,
-): Promise<Response> => {
+export const getLatestWorkout = async (req: Request, res: Response) => {
   const workout = await getLatestWorkoutDal(+req.params.templateId);
-  return res.status(200).send(workout);
+  res.status(200).send(workout);
 };

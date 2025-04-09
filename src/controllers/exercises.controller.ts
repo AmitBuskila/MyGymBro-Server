@@ -7,7 +7,7 @@ import { getWorkoutById } from '../dal/workouts.dal';
 
 export const getExercises = async (req: Request, res: Response) => {
   const exercises = await getAllExercisesDal();
-  return res.send(exercises);
+  res.send(exercises);
 };
 
 //unused
@@ -28,5 +28,5 @@ export const getPreviousExercisesResults = async (
       ),
     })),
   );
-  return res.send(previousResults);
+  res.send(previousResults);
 };
