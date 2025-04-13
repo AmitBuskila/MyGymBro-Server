@@ -11,6 +11,11 @@ import {
 } from '../dal/user.dal';
 import { User } from '../entities/user.entity';
 import { ServerError } from '../utils/customError';
+import {
+  deleteExpiredCodes,
+  getLatestUserCode,
+  updateResetCode,
+} from '../dal/resetCode.dal';
 
 export const registerUser = async (req: Request, res: Response) => {
   const { firstName, lastName, email, password } = req.body;
@@ -68,14 +73,20 @@ export const getUserData = async (req: Request, res: Response) => {
 };
 
 export const updateUser = async (req: Request, res: Response) => {
+  const user: User | undefined = await findUserByEmail(req.body.email);
+  if (!user) {
+    res.status(404).send({ message: 'User not found' });
+    return;
+  }
   if (req.body.password) {
     const hashedPassword: string = await bcrypt.hash(req.body.password, 10);
     req.body.password = hashedPassword;
   }
   const updatedUser: User | null = await updateUserDal({
-    id: +req.params.userId,
+    id: user.id,
     ...req.body,
   });
+  console.log('Updated user:', updatedUser);
   res.send(updatedUser);
 };
 
@@ -87,8 +98,8 @@ export const sendEmailCode = async (req: Request, res: Response) => {
     return;
   }
   const code: string = Math.floor(100000 + Math.random() * 900000).toString();
-  const expiration: number = Date.now() + 60 * 60 * 1000;
-  // Store the code and expiration in the database (implementation not shown here)
+  const expiration: Date = new Date(Date.now() + 60 * 60 * 1000);
+  await updateResetCode({ code, expiration }, user.id);
 
   const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -123,9 +134,27 @@ export const sendEmailCode = async (req: Request, res: Response) => {
     </div>
   `,
   };
-
   await transporter.sendMail(mailOptions);
   console.log(`Verification code sent to ${username}`);
+  deleteExpiredCodes(); // instead of cronjob, cleanup
+  res.json({ message: 'Verification code sent successfully', status: 200 });
+};
 
-  res.status(200).send({ message: 'Verification code sent successfully' });
+export const validateUserCode = async (req: Request, res: Response) => {
+  const { code, username } = req.body;
+  const user: User | undefined = await findUserByEmail(username);
+  if (!user) {
+    res.status(404).json({ message: 'User not found' });
+    return;
+  }
+  const latestCode = await getLatestUserCode(user.id);
+  if (!latestCode) {
+    res.status(404).json({ message: 'No code found for this user' });
+    return;
+  }
+  if (latestCode.code === code) {
+    res.json({ message: 'Code is valid', status: 200 });
+  } else {
+    res.status(400).json({ message: 'Invalid code' });
+  }
 };
