@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Workout } from './workout.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { ResetCode } from './resetCode.entity';
 import { Template } from './template.entity';
+import { Workout } from './workout.entity';
 
 @Entity()
 export class User {
@@ -28,4 +29,7 @@ export class User {
     onDelete: 'CASCADE',
   })
   templates!: Template[];
+
+  @OneToMany(() => ResetCode, (resetCode) => resetCode.user)
+  resetCode!: ResetCode;
 }
