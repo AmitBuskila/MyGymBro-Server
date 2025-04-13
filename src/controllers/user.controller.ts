@@ -86,8 +86,6 @@ export const updateUser = async (req: Request, res: Response) => {
     id: user.id,
     ...req.body,
   });
-  console.log('Updated user:', updatedUser);
-  console.log('Updated user:', updatedUser);
   res.send(updatedUser);
 };
 
@@ -136,7 +134,6 @@ export const sendEmailCode = async (req: Request, res: Response) => {
   `,
   };
   await transporter.sendMail(mailOptions);
-  console.log(`Verification code sent to ${username}`);
   deleteExpiredCodes(); // instead of cronjob, cleanup
   res.json({ message: 'Verification code sent successfully', status: 200 });
 };
@@ -158,6 +155,5 @@ export const validateUserCode = async (req: Request, res: Response) => {
   } else {
     res.status(400).json({ message: 'Invalid code' });
   }
-  deleteExpiredCodes(); // instead of cronjob, cleanup
   res.json({ message: 'Verification code sent successfully', status: 200 });
 };
