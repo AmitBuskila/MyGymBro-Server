@@ -9,4 +9,6 @@ export default {
   jwtSecret: process.env.ACCESS_TOKEN || '',
   postgresUrl: process.env.POSTGRES_URL || '',
   mode: process.env.NODE_ENV || '',
+  email: process.env.EMAIL || '',
+  emailPassword: process.env.EMAIL_PASSWORD || '',
 };

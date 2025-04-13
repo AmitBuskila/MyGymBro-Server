@@ -10,6 +10,14 @@ export const addUser = async (user: AddUserInput): Promise<User> => {
   return usersRepository.save(user);
 };
 
+export const updateUserDal = async (user: Partial<User>): Promise<User> => {
+  const existingUser = await usersRepository.findOneOrFail({
+    where: { id: user.id },
+  });
+  Object.assign(existingUser, user);
+  return usersRepository.save(existingUser);
+};
+
 export const findUserByEmail = async (
   email: string,
 ): Promise<User | undefined> => {
