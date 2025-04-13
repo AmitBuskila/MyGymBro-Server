@@ -4,6 +4,11 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import config from '../config';
 import {
+  deleteExpiredCodes,
+  getLatestUserCode,
+  updateResetCode,
+} from '../dal/resetCode.dal';
+import {
   addUser,
   findUserByEmail,
   getUserDataDal,
@@ -11,16 +16,6 @@ import {
 } from '../dal/user.dal';
 import { User } from '../entities/user.entity';
 import { ServerError } from '../utils/customError';
-import {
-  deleteExpiredCodes,
-  getLatestUserCode,
-  updateResetCode,
-} from '../dal/resetCode.dal';
-import {
-  deleteExpiredCodes,
-  getLatestUserCode,
-  updateResetCode,
-} from '../dal/resetCode.dal';
 
 export const registerUser = async (req: Request, res: Response) => {
   const { firstName, lastName, email, password } = req.body;
@@ -83,17 +78,11 @@ export const updateUser = async (req: Request, res: Response) => {
     res.status(404).send({ message: 'User not found' });
     return;
   }
-  const user: User | undefined = await findUserByEmail(req.body.email);
-  if (!user) {
-    res.status(404).send({ message: 'User not found' });
-    return;
-  }
   if (req.body.password) {
     const hashedPassword: string = await bcrypt.hash(req.body.password, 10);
     req.body.password = hashedPassword;
   }
   const updatedUser: User | null = await updateUserDal({
-    id: user.id,
     id: user.id,
     ...req.body,
   });
@@ -171,23 +160,4 @@ export const validateUserCode = async (req: Request, res: Response) => {
   }
   deleteExpiredCodes(); // instead of cronjob, cleanup
   res.json({ message: 'Verification code sent successfully', status: 200 });
-};
-
-export const validateUserCode = async (req: Request, res: Response) => {
-  const { code, username } = req.body;
-  const user: User | undefined = await findUserByEmail(username);
-  if (!user) {
-    res.status(404).json({ message: 'User not found' });
-    return;
-  }
-  const latestCode = await getLatestUserCode(user.id);
-  if (!latestCode) {
-    res.status(404).json({ message: 'No code found for this user' });
-    return;
-  }
-  if (latestCode.code === code) {
-    res.json({ message: 'Code is valid', status: 200 });
-  } else {
-    res.status(400).json({ message: 'Invalid code' });
-  }
 };

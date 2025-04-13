@@ -8,7 +8,6 @@ import {
 import { ResetCode } from './resetCode.entity';
 import { Template } from './template.entity';
 import { Workout } from './workout.entity';
-import { Workout } from './workout.entity';
 
 @Entity()
 export class User {
