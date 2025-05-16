@@ -1,6 +1,8 @@
 import { Workout } from '../entities/workout.entity';
+import { WorkoutExercise } from '../entities/workoutExercise.entity';
 import { AppDataSource } from '../helpers/dataSource';
 import { AddWorkoutInput } from '../types/types';
+import { WorkoutExerciseRepository } from './exercise.dal';
 
 const workoutsRepository = AppDataSource.getRepository(Workout);
 
@@ -48,4 +50,16 @@ export const getLatestWorkoutDal = async (
     .addOrderBy('workout.startDate', 'DESC')
     .addOrderBy('sets.index')
     .getOne();
+};
+
+export const getExerciseResultsDal = async (
+  userId: number,
+  exerciseId: number,
+): Promise<WorkoutExercise[]> => {
+  return WorkoutExerciseRepository.createQueryBuilder('workoutExercises')
+    .leftJoinAndSelect('workoutExercises.workout', 'workout')
+    .leftJoinAndSelect('workoutExercises.sets', 'sets')
+    .where('workout.userId = :userId', { userId })
+    .andWhere('workoutExercises.exerciseId = :exerciseId', { exerciseId })
+    .getMany();
 };

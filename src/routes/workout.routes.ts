@@ -3,6 +3,7 @@ import {
   addWorkout,
   getLatestWorkout,
   getWorkouts,
+  getExerciseResults,
 } from '../controllers/workout.controller';
 import authenticateToken from '../middlewares/auth.middleware';
 import { asyncErrorHandler } from '../middlewares/asyncErrorHandler.middleware';
@@ -25,4 +26,9 @@ workoutsRouter.get(
   asyncErrorHandler(getLatestWorkout),
 );
 
+workoutsRouter.get(
+  '/users/:userId/exercises/:exerciseId/results',
+  authenticateToken,
+  asyncErrorHandler(getExerciseResults),
+);
 export default workoutsRouter;
