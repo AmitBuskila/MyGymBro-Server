@@ -59,6 +59,7 @@ export const getExerciseResultsDal = async (
   return WorkoutExerciseRepository.createQueryBuilder('workoutExercises')
     .leftJoinAndSelect('workoutExercises.workout', 'workout')
     .leftJoinAndSelect('workoutExercises.sets', 'sets')
+    .leftJoinAndSelect('workoutExercises.exercise', 'exercise')
     .where('workout.userId = :userId', { userId })
     .andWhere('workoutExercises.exerciseId = :exerciseId', { exerciseId })
     .getMany();

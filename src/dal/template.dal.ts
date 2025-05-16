@@ -19,6 +19,16 @@ export const removeTemplateDal = async (
   return templateId;
 };
 
+export const getTemplateDal = async (templateId: number): Promise<Template> => {
+  return templatesRepository
+    .createQueryBuilder('template')
+    .leftJoinAndSelect('template.workoutExercises', 'workoutExercise')
+    .leftJoinAndSelect('template.user', 'user')
+    .leftJoinAndSelect('workoutExercise.exercise', 'exercise')
+    .where('template.id = :templateId', { templateId })
+    .getOneOrFail();
+};
+
 export const addTemplateDal = async (
   template: AddTemplateInput,
 ): Promise<Template> => {

@@ -64,6 +64,7 @@ export const getExerciseResults = async (req: Request, res: Response) => {
     workoutExercise.sets.map((set) => ({
       ...set,
       date: workoutExercise.workout?.startDate,
+      exerciseName: workoutExercise.exercise?.name,
     })),
   );
 
