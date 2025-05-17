@@ -62,5 +62,8 @@ export const getExerciseResultsDal = async (
     .leftJoinAndSelect('workoutExercises.exercise', 'exercise')
     .where('workout.userId = :userId', { userId })
     .andWhere('workoutExercises.exerciseId = :exerciseId', { exerciseId })
+    .addOrderBy('workout.startDate')
+    .addOrderBy('workoutExercises.index')
+    .addOrderBy('sets.index')
     .getMany();
 };

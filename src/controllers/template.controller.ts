@@ -73,7 +73,7 @@ export const updateTemplate = async (req: Request, res: Response) => {
   const updatedTemplate = await updateTemplateDal(
     {
       ...req.body,
-      workoutExercises: templateExercises,
+      ...(templateExercises.length && { workoutExercises: templateExercises }),
     },
     +req.params.templateId,
   );
