@@ -3,10 +3,13 @@ import {
   addWorkoutDal,
   getLatestWorkoutDal,
   getUserWorkoutsDal,
+  getExerciseResultsDal,
 } from '../dal/workouts.dal';
 import { Workout } from '../entities/workout.entity';
 import { addWorkoutExercise } from '../dal/exercise.dal';
 import { addSet } from '../dal/set.dal';
+import { WorkoutExercise } from '../entities/workoutExercise.entity';
+import { Set } from '../entities/set.entity';
 
 export const addWorkout = async (req: Request, res: Response) => {
   const { startDate, totalTime, templateId, userId, workoutExercises } =
@@ -49,4 +52,21 @@ export const getWorkouts = async (req: Request, res: Response) => {
 export const getLatestWorkout = async (req: Request, res: Response) => {
   const workout = await getLatestWorkoutDal(+req.params.templateId);
   res.status(200).send(workout);
+};
+
+export const getExerciseResults = async (req: Request, res: Response) => {
+  const { userId, exerciseId } = req.params;
+  const workoutExercises: WorkoutExercise[] = await getExerciseResultsDal(
+    +userId,
+    +exerciseId,
+  );
+  const workSets: Set[] = workoutExercises.flatMap((workoutExercise) =>
+    workoutExercise.sets.map((set) => ({
+      ...set,
+      date: workoutExercise.workout?.startDate,
+      exerciseName: workoutExercise.exercise?.name,
+    })),
+  );
+
+  res.status(200).send(workSets);
 };

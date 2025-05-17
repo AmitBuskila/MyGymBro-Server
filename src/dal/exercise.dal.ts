@@ -4,9 +4,12 @@ import { WorkoutExercise } from '../entities/workoutExercise.entity';
 import { AppDataSource } from '../helpers/dataSource';
 import { addWorkoutExerciseInput } from '../types/types';
 
-export const getAllExercisesDal = async (): Promise<Exercise[] | null> => {
-  return AppDataSource.getRepository(Exercise).find();
-};
+export const ExerciseRepository = AppDataSource.getRepository(Exercise);
+export const WorkoutExerciseRepository =
+  AppDataSource.getRepository(WorkoutExercise);
+
+export const getAllExercisesDal = async (): Promise<Exercise[] | null> =>
+  ExerciseRepository.find();
 
 export const addWorkoutExercise = async (
   workoutExercise: addWorkoutExerciseInput,

@@ -4,6 +4,7 @@ import {
   getTemplates,
   removeTemplate,
   updateTemplate,
+  getTemplateStats,
 } from '../controllers/template.controller';
 import authenticateToken from '../middlewares/auth.middleware';
 import { asyncErrorHandler } from '../middlewares/asyncErrorHandler.middleware';
@@ -29,6 +30,12 @@ templateRouter.get(
   '/getTemplates/:userId',
   authenticateToken,
   asyncErrorHandler(getTemplates),
+);
+
+templateRouter.get(
+  '/getTemplateStats/:templateId',
+  authenticateToken,
+  asyncErrorHandler(getTemplateStats),
 );
 
 export default templateRouter;
