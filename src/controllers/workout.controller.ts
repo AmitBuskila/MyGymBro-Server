@@ -4,6 +4,7 @@ import {
   getLatestWorkoutDal,
   getUserWorkoutsDal,
   getExerciseResultsDal,
+  getWorkoutsResultsByDate,
 } from '../dal/workouts.dal';
 import { Workout } from '../entities/workout.entity';
 import { addWorkoutExercise } from '../dal/exercise.dal';
@@ -65,6 +66,32 @@ export const getExerciseResults = async (req: Request, res: Response) => {
       ...set,
       date: workoutExercise.workout?.startDate,
       exerciseName: workoutExercise.exercise?.name,
+    })),
+  );
+
+  res.status(200).send(workSets);
+};
+
+export const getWorkoutsExercisesResults = async (
+  req: Request,
+  res: Response,
+) => {
+  const { userId } = req.params;
+  const { fromDate, toDate } = req.body;
+  const workoutExercises: WorkoutExercise[] = await getWorkoutsResultsByDate(
+    +userId,
+    new Date(fromDate),
+    new Date(toDate),
+  );
+  const workSets: Set[] = workoutExercises.flatMap((workoutExercise) =>
+    workoutExercise.sets.map((set) => ({
+      ...set,
+      date: workoutExercise.workout?.startDate,
+      exerciseName: workoutExercise.exercise?.name,
+      muscleGroups: [
+        workoutExercise.exercise?.primaryMuscle,
+        workoutExercise.exercise?.secondaryMuscle,
+      ].filter(Boolean),
     })),
   );
 
