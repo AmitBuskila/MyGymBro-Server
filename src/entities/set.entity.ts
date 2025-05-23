@@ -26,6 +26,9 @@ export class Set {
   @Column({ default: false })
   isSecondary!: boolean;
 
+  @Column({ default: false })
+  isFake!: boolean;
+
   @Column({ nullable: true })
   repsDone?: number;
 }
