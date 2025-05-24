@@ -1,5 +1,6 @@
 import { DeleteResult } from 'typeorm';
 import { Template } from '../entities/template.entity';
+import { WorkoutExercise } from '../entities/workoutExercise.entity';
 import { AppDataSource } from '../helpers/dataSource';
 import { AddTemplateInput, UpdateTemplateInput } from '../types/types';
 import { ServerError } from '../utils/customError';
@@ -41,11 +42,23 @@ export const updateTemplateDal = async (
   template: UpdateTemplateInput,
   templateId: number,
 ): Promise<Template> => {
-  const templateToUpdate = await templatesRepository.findOneByOrFail({
-    id: templateId,
+  const templateToUpdate = await templatesRepository.findOneOrFail({
+    where: { id: templateId },
+    relations: { workoutExercises: true },
   });
-  Object.assign(templateToUpdate, template);
-  const updatedTemplate = await templatesRepository.save(templateToUpdate);
+  const updatedTemplate: Template = await AppDataSource.transaction(
+    async (manager) => {
+      if (templateToUpdate.workoutExercises?.length) {
+        await Promise.all(
+          templateToUpdate.workoutExercises.map((exercise) =>
+            manager.delete(WorkoutExercise, exercise.id),
+          ),
+        );
+      }
+      Object.assign(templateToUpdate, template);
+      return manager.save(templateToUpdate);
+    },
+  );
   console.log('template has been updated', { updatedTemplate });
   return updatedTemplate;
 };

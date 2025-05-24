@@ -1,3 +1,4 @@
+import { SelectQueryBuilder } from 'typeorm';
 import { Workout } from '../entities/workout.entity';
 import { WorkoutExercise } from '../entities/workoutExercise.entity';
 import { AppDataSource } from '../helpers/dataSource';
@@ -56,14 +57,33 @@ export const getExerciseResultsDal = async (
   userId: number,
   exerciseId: number,
 ): Promise<WorkoutExercise[]> => {
-  return WorkoutExerciseRepository.createQueryBuilder('workoutExercises')
+  return getStatsQuery(userId)
+    .andWhere('exercise.id = :exerciseId', { exerciseId })
+    .getMany();
+};
+
+export const getWorkoutsResultsByDate = async (
+  userId: number,
+  fromDate: Date,
+  toDate: Date,
+): Promise<WorkoutExercise[]> => {
+  return getStatsQuery(userId)
+    .andWhere('workout.startDate BETWEEN :fromDate AND :toDate', {
+      fromDate,
+      toDate,
+    })
+    .getMany();
+};
+
+export const getStatsQuery = (
+  userId: number,
+): SelectQueryBuilder<WorkoutExercise> =>
+  WorkoutExerciseRepository.createQueryBuilder('workoutExercises')
     .leftJoinAndSelect('workoutExercises.workout', 'workout')
     .leftJoinAndSelect('workoutExercises.sets', 'sets')
     .leftJoinAndSelect('workoutExercises.exercise', 'exercise')
     .where('workout.userId = :userId', { userId })
-    .andWhere('workoutExercises.exerciseId = :exerciseId', { exerciseId })
+    .andWhere('sets.isFake = false')
     .addOrderBy('workout.startDate')
     .addOrderBy('workoutExercises.index')
-    .addOrderBy('sets.index')
-    .getMany();
-};
+    .addOrderBy('sets.index');
