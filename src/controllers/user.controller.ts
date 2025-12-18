@@ -96,6 +96,7 @@ export const sendEmailCode = async (req: Request, res: Response) => {
     res.status(404).send({ message: 'User not found' });
     return;
   }
+  deleteExpiredCodes(); // instead of cronjob, cleanup
   const code: string = Math.floor(100000 + Math.random() * 900000).toString();
   const expiration: Date = new Date(Date.now() + 60 * 60 * 1000);
   await updateResetCode({ code, expiration }, user.id);
@@ -134,7 +135,6 @@ export const sendEmailCode = async (req: Request, res: Response) => {
   `,
   };
   await transporter.sendMail(mailOptions);
-  deleteExpiredCodes(); // instead of cronjob, cleanup
   res.json({ message: 'Verification code sent successfully', status: 200 });
 };
 
@@ -148,12 +148,9 @@ export const validateUserCode = async (req: Request, res: Response) => {
   const latestCode = await getLatestUserCode(user.id);
   if (!latestCode) {
     res.status(404).json({ message: 'No code found for this user' });
-    return;
-  }
-  if (latestCode.code === code) {
+  } else if (latestCode.code === code) {
     res.json({ message: 'Code is valid', status: 200 });
   } else {
     res.status(400).json({ message: 'Invalid code' });
   }
-  res.json({ message: 'Verification code sent successfully', status: 200 });
 };
