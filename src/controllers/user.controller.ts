@@ -16,6 +16,9 @@ import {
 } from '../dal/user.dal';
 import { User } from '../entities/user.entity';
 import { ServerError } from '../utils/customError';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const registerUser = async (req: Request, res: Response) => {
   const { firstName, lastName, email, password } = req.body;
@@ -89,7 +92,56 @@ export const updateUser = async (req: Request, res: Response) => {
   res.send(updatedUser);
 };
 
-export const sendEmailCode = async (req: Request, res: Response) => {
+// export const sendNodemailerEmailCode = async (req: Request, res: Response) => {
+//   const { username } = req.body;
+//   const user: User | undefined = await findUserByEmail(username);
+//   if (!user) {
+//     res.status(404).send({ message: 'User not found' });
+//     return;
+//   }
+//   deleteExpiredCodes(); // instead of cronjob, cleanup
+//   const code: string = Math.floor(100000 + Math.random() * 900000).toString();
+//   const expiration: Date = new Date(Date.now() + 60 * 60 * 1000);
+//   await updateResetCode({ code, expiration }, user.id);
+
+//   const transporter = nodemailer.createTransport({
+//     host: 'smtp.gmail.com',
+//     port: 587,
+//     secure: false,
+//     auth: {
+//       user: config.email,
+//       pass: config.emailPassword,
+//     },
+//     connectionTimeout: 10000,
+//   });
+
+//   const mailOptions = {
+//     from: '"MyGymBro App" <no-reply@MyGymBro.com>',
+//     to: username,
+//     subject: 'Your Verification Code',
+//     html: `
+//     <div style="font-family: sans-serif; max-width: 400px; margin: auto; border: 1px solid #eee; border-radius: 10px; padding: 20px;">
+//       <h2 style="text-align: center; color: #4A90E2;">🔐 Verify Your Email</h2>
+//       <p style="font-size: 16px; color: #333;">
+//         Your 6-digit verification code is:
+//       </p>
+//       <div style="font-size: 32px; font-weight: bold; letter-spacing: 6px; text-align: center; margin: 20px 0; color: #4A90E2;">
+//         ${code}
+//       </div>
+//       <p style="font-size: 14px; color: #777;">
+//         This code will expire in 1 hour. If you didn’t request this, you can safely ignore this email.
+//       </p>
+//       <p style="font-size: 12px; color: #bbb; text-align: center; margin-top: 30px;">
+//         &copy; ${new Date().getFullYear()} MyGymBro
+//       </p>
+//     </div>
+//   `,
+//   };
+//   await transporter.sendMail(mailOptions);
+//   res.json({ message: 'Verification code sent successfully', status: 200 });
+// };
+
+export const resendEmailCode = async (req: Request, res: Response) => {
   const { username } = req.body;
   const user: User | undefined = await findUserByEmail(username);
   if (!user) {
@@ -100,41 +152,28 @@ export const sendEmailCode = async (req: Request, res: Response) => {
   const code: string = Math.floor(100000 + Math.random() * 900000).toString();
   const expiration: Date = new Date(Date.now() + 60 * 60 * 1000);
   await updateResetCode({ code, expiration }, user.id);
-
-  const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: config.email,
-      pass: config.emailPassword,
-    },
-    connectionTimeout: 10000,
-  });
-
-  const mailOptions = {
-    from: '"MyGymBro App" <no-reply@MyGymBro.com>',
-    to: username,
-    subject: 'Your Verification Code',
-    html: `
-    <div style="font-family: sans-serif; max-width: 400px; margin: auto; border: 1px solid #eee; border-radius: 10px; padding: 20px;">
-      <h2 style="text-align: center; color: #4A90E2;">🔐 Verify Your Email</h2>
-      <p style="font-size: 16px; color: #333;">
-        Your 6-digit verification code is:
-      </p>
-      <div style="font-size: 32px; font-weight: bold; letter-spacing: 6px; text-align: center; margin: 20px 0; color: #4A90E2;">
-        ${code}
+  await resend.emails.send({
+      from: 'onboarding@resend.dev', 
+      to: username, 
+      subject: 'Your Verification Code',
+      html: `
+      <div style="font-family: sans-serif; max-width: 400px; margin: auto; border: 1px solid #eee; border-radius: 10px; padding: 20px;">
+        <h2 style="text-align: center; color: #4A90E2;">🔐 Verify Your Email</h2>
+        <p style="font-size: 16px; color: #333;">
+          Your 6-digit verification code is:
+        </p>
+        <div style="font-size: 32px; font-weight: bold; letter-spacing: 6px; text-align: center; margin: 20px 0; color: #4A90E2;">
+          ${code}
+        </div>
+        <p style="font-size: 14px; color: #777;">
+          This code will expire in 1 hour. If you didn’t request this, you can safely ignore this email.
+        </p>
+        <p style="font-size: 12px; color: #bbb; text-align: center; margin-top: 30px;">
+          &copy; ${new Date().getFullYear()} MyGymBro
+        </p>
       </div>
-      <p style="font-size: 14px; color: #777;">
-        This code will expire in 1 hour. If you didn’t request this, you can safely ignore this email.
-      </p>
-      <p style="font-size: 12px; color: #bbb; text-align: center; margin-top: 30px;">
-        &copy; ${new Date().getFullYear()} MyGymBro
-      </p>
-    </div>
   `,
-  };
-  await transporter.sendMail(mailOptions);
+    })
   res.json({ message: 'Verification code sent successfully', status: 200 });
 };
 
