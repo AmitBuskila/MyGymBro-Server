@@ -109,9 +109,6 @@ export const sendEmailCode = async (req: Request, res: Response) => {
       user: config.email,
       pass: config.emailPassword,
     },
-    tls: {
-      rejectUnauthorized: false,
-    },
   });
 
   const mailOptions = {
