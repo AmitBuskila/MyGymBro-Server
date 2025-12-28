@@ -102,7 +102,9 @@ export const sendEmailCode = async (req: Request, res: Response) => {
   await updateResetCode({ code, expiration }, user.id);
 
   const transporter = nodemailer.createTransport({
-    service: 'Gmail',
+    service: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
       user: config.email,
       pass: config.emailPassword,
